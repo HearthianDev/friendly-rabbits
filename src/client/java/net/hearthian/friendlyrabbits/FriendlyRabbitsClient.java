@@ -1,8 +1,8 @@
-package net.hearthian.template;
+package net.hearthian.friendlyrabbits;
 
 import net.fabricmc.api.ClientModInitializer;
 
-public class HearthianModTemplateClient implements ClientModInitializer {
+public class FriendlyRabbitsClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
