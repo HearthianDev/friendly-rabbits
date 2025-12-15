@@ -11,11 +11,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.rabbit.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,15 +38,15 @@ public class RabbitMixin extends Animal {
     @Unique
     private static final Predicate<Entity> AVOID_PLAYERS = entity -> !entity.isDiscrete() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity);
     @Unique
-    private static final Codec<EntityReference<LivingEntity>> TRUSTED_ID_CODEC = EntityReference.codec();
+    private static final Codec<EntityReference<@NotNull LivingEntity>> TRUSTED_ID_CODEC = EntityReference.codec();
     @Unique
-    private static final Codec<List<EntityReference<LivingEntity>>> TRUSTED_ID_LIST_CODEC = TRUSTED_ID_CODEC.listOf();
+    private static final Codec<List<EntityReference<@NotNull LivingEntity>>> TRUSTED_ID_LIST_CODEC = TRUSTED_ID_CODEC.listOf();
     @Unique
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_TRUSTED_ID_0 = SynchedEntityData.defineId(RabbitMixin.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<@NotNull Optional<EntityReference<@NotNull LivingEntity>>> DATA_TRUSTED_ID_0 = SynchedEntityData.defineId(RabbitMixin.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     @Unique
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_TRUSTED_ID_1 = SynchedEntityData.defineId(RabbitMixin.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<@NotNull Optional<EntityReference<@NotNull LivingEntity>>> DATA_TRUSTED_ID_1 = SynchedEntityData.defineId(RabbitMixin.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
 
-    protected RabbitMixin(EntityType<? extends Animal> entityType, Level level) {
+    protected RabbitMixin(EntityType<? extends @NotNull Animal> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -61,13 +63,13 @@ public class RabbitMixin extends Animal {
 
     @Shadow
     @Override
-    public boolean isFood(ItemStack itemStack) {
+    public boolean isFood(@NotNull ItemStack itemStack) {
         return false;
     }
 
     @Shadow
     @Override
-    public @Nullable AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
+    public @Nullable AgeableMob getBreedOffspring(@NotNull ServerLevel serverLevel, @NotNull AgeableMob ageableMob) {
         return null;
     }
 
@@ -89,7 +91,7 @@ public class RabbitMixin extends Animal {
         cir.setReturnValue((Rabbit)(LivingEntity)rabbit);
     }
 
-    protected void onOffspringSpawnedFromEgg(Player player, Mob mob) {
+    protected void onOffspringSpawnedFromEgg(@NotNull Player player, @NotNull Mob mob) {
         ((RabbitMixin)mob).addTrustedEntity(player);
     }
 
@@ -99,7 +101,7 @@ public class RabbitMixin extends Animal {
     }
 
     @Unique
-    private void addTrustedEntity(EntityReference<LivingEntity> entityReference) {
+    private void addTrustedEntity(EntityReference<@NotNull LivingEntity> entityReference) {
         if ((this.entityData.get(DATA_TRUSTED_ID_0)).isPresent()) {
             this.entityData.set(DATA_TRUSTED_ID_1, Optional.of(entityReference));
         } else {
@@ -113,7 +115,7 @@ public class RabbitMixin extends Animal {
     }
 
     @Unique
-    Stream<EntityReference<LivingEntity>> getTrustedEntities() {
+    Stream<EntityReference<@NotNull LivingEntity>> getTrustedEntities() {
         return Stream.concat(((Optional)this.entityData.get(DATA_TRUSTED_ID_0)).stream(), ((Optional)this.entityData.get(DATA_TRUSTED_ID_1)).stream());
     }
 
